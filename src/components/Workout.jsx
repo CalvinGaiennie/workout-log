@@ -1,10 +1,14 @@
-function Workout({ workout }) {
+import Exercise from "./Exercise";
+function Workout({ workout, addExercise, addSet }) {
   return (
-    <form className="d-flex flex-column gap-2">
-      <label htmlFor="workoutName">{workout.name}</label>
+    <div className="d-flex flex-column gap-2">
+      <h1>{workout.name}</h1>
       <input type="text" placeholder="Workout Name" />
-      <button type="submit">Add Workout</button>
-    </form>
+      {workout.exercises.map((exercise) => (
+        <Exercise key={exercise.name} exercise={exercise} addSet={addSet} />
+      ))}
+      <button onClick={() => addExercise()}>Add Exercise</button>
+    </div>
   );
 }
 

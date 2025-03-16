@@ -1,13 +1,36 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-require("dotenv").config();
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import dotenv from "dotenv";
+
+// Get dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Load environment variables
+dotenv.config({ path: __dirname + "/.env" });
+
+// Debug for environment variables
+console.log("MONGODB_URI exists:", process.env.MONGODB_URI ? "Yes" : "No");
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Make sure this comes BEFORE any routes
+app.use(
+  cors({
+    origin: "*", // Very permissive - only use for development
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// Then your other middleware
 app.use(express.json());
+
+// Set mongoose debug mode
+mongoose.set("debug", true);
 
 // MongoDB connection
 mongoose
@@ -49,7 +72,7 @@ app.post("/api/workouts", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

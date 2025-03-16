@@ -1,6 +1,7 @@
 import Sidebar from "../components/Sidebar";
 import Workout from "../components/Workout";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getWorkouts } from "../services/api";
 
 function HomePage() {
   const [currentWorkout, setCurrentWorkout] = useState({
@@ -8,7 +9,20 @@ function HomePage() {
     duration: 30,
     exercises: [{ name: "Exercise 1", sets: [1, 2, 3] }],
   });
+  const [workouts, setWorkouts] = useState([]);
 
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const data = await getWorkouts();
+        setWorkouts(data);
+      } catch (error) {
+        console.error("Error fetching workouts:", error);
+      }
+    };
+
+    fetchWorkouts();
+  }, []);
   function handleWorkoutChange(workout) {
     setCurrentWorkout(workout);
   }
@@ -34,7 +48,7 @@ function HomePage() {
     });
   }
 
-  const workouts = [
+  const fakeWorkouts = [
     {
       id: 1,
       name: "Workout 1",
@@ -64,7 +78,7 @@ function HomePage() {
 
   return (
     <div className="d-flex">
-      <Sidebar onWorkoutChange={handleWorkoutChange} workouts={workouts} />
+      <Sidebar onWorkoutChange={handleWorkoutChange} workouts={fakeWorkouts} />
       <div className="p-3">
         <Workout
           workout={currentWorkout}

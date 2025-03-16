@@ -1,4 +1,4 @@
-function Exercise({ exercise, addSet }) {
+function Exercise({ exercise, dispatch }) {
   return (
     <div>
       <h3>{exercise.name}</h3>
@@ -6,7 +6,11 @@ function Exercise({ exercise, addSet }) {
         {exercise.sets.map((set) => (
           <input key={set} placeholder={`Set ${set}`} />
         ))}
-        <button onClick={() => addSet(exercise.name)}>Add Set</button>
+        <button
+          onClick={() => dispatch({ type: "ADD_SET", payload: exercise.name })}
+        >
+          Add Set
+        </button>
       </div>
     </div>
   );

@@ -42,6 +42,23 @@ const reducer = (state, action) => {
           ),
         },
       };
+    case "SET_CURRENT_WORKOUT_NAME":
+      return {
+        ...state,
+        currentWorkout: { ...state.currentWorkout, name: action.payload },
+      };
+    case "SET_CURRENT_EXERCISE_NAME":
+      return {
+        ...state,
+        currentWorkout: {
+          ...state.currentWorkout,
+          exercises: state.currentWorkout.exercises.map((exercise) =>
+            exercise.name === action.payload
+              ? { ...exercise, name: action.payload }
+              : exercise
+          ),
+        },
+      };
     default:
       return state;
   }

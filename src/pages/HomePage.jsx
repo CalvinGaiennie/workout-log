@@ -1,13 +1,20 @@
 import Sidebar from "../components/Sidebar";
 import Workout from "../components/Workout";
 import { useEffect, useReducer } from "react";
-import { getWorkouts } from "../services/api";
+import { deleteWorkout, getWorkouts, updateWorkout } from "../services/api";
+import { createWorkout } from "../services/api";
 
 const initialState = {
   currentWorkout: {
     name: "Default Workout",
     duration: 30,
-    exercises: [{ name: "Exercise 1", sets: [1, 2, 3] }],
+    exercises: [
+      {
+        id: crypto.randomUUID(),
+        name: "Exercise 1",
+        sets: [1, 2, 3],
+      },
+    ],
   },
 
   workouts: [],
@@ -16,7 +23,16 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case "SET_CURRENT_WORKOUT":
-      return { ...state, currentWorkout: action.payload };
+      return {
+        ...state,
+        currentWorkout: {
+          ...action.payload,
+          exercises: action.payload.exercises.map((exercise) => ({
+            ...exercise,
+            id: exercise.id || crypto.randomUUID(),
+          })),
+        },
+      };
     case "SET_WORKOUTS":
       return { ...state, workouts: action.payload };
     case "ADD_EXERCISE":
@@ -26,7 +42,11 @@ const reducer = (state, action) => {
           ...state.currentWorkout,
           exercises: [
             ...state.currentWorkout.exercises,
-            { name: "Exercise 1", sets: [1, 2, 3] },
+            {
+              id: crypto.randomUUID(),
+              name: "Exercise 1",
+              sets: [1, 2, 3],
+            },
           ],
         },
       };
@@ -53,11 +73,24 @@ const reducer = (state, action) => {
         currentWorkout: {
           ...state.currentWorkout,
           exercises: state.currentWorkout.exercises.map((exercise) =>
-            exercise.name === action.payload
-              ? { ...exercise, name: action.payload }
+            exercise.id === action.payload.id
+              ? { ...exercise, name: action.payload.name }
               : exercise
           ),
         },
+      };
+    case "UPDATE_WORKOUT_SUCCESS":
+      return {
+        ...state,
+        workouts: state.workouts.map((w) =>
+          w._id === action.payload._id ? action.payload : w
+        ),
+      };
+    case "CREATE_WORKOUT_SUCCESS":
+      return {
+        ...state,
+        currentWorkout: action.payload,
+        workouts: [...state.workouts, action.payload],
       };
     default:
       return state;
@@ -66,7 +99,43 @@ const reducer = (state, action) => {
 
 function HomePage() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  console.log(state.workouts);
+
+  const handleSaveWorkout = async () => {
+    try {
+      let savedWorkout;
+      console.log("Saving workout with ID:", state.currentWorkout._id);
+      if (state.currentWorkout._id) {
+        savedWorkout = await updateWorkout(state.currentWorkout);
+        dispatch({ type: "UPDATE_WORKOUT_SUCCESS", payload: savedWorkout });
+      } else {
+        savedWorkout = await createWorkout(state.currentWorkout);
+        dispatch({ type: "CREATE_WORKOUT_SUCCESS", payload: savedWorkout });
+      }
+    } catch (error) {
+      console.error("Failed to save workout:", error.response?.data || error);
+    }
+  };
+  const handleDeleteWorkout = async () => {
+    try {
+      if (!state.currentWorkout._id) return; // Don't try to delete if no ID
+
+      await deleteWorkout(state.currentWorkout);
+      // Update the workouts list
+      dispatch({
+        type: "SET_WORKOUTS",
+        payload: state.workouts.filter(
+          (w) => w._id !== state.currentWorkout._id
+        ),
+      });
+      // Reset current workout to default
+      dispatch({
+        type: "SET_CURRENT_WORKOUT",
+        payload: initialState.currentWorkout,
+      });
+    } catch (error) {
+      console.error("Failed to delete workout:", error.response?.data || error);
+    }
+  };
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -81,11 +150,23 @@ function HomePage() {
     fetchWorkouts();
   }, []);
 
+  useEffect(() => {
+    console.log("current workout", state.currentWorkout);
+  }, [state.currentWorkout]);
+
   return (
-    <div className="d-flex">
-      <Sidebar dispatch={dispatch} workouts={state.workouts} />
-      <div className="p-3">
-        <Workout workout={state.currentWorkout} dispatch={dispatch} />
+    <div>
+      <div className="d-flex">
+        <Sidebar dispatch={dispatch} workouts={state.workouts} />
+        <div>
+          <Workout workout={state.currentWorkout} dispatch={dispatch} />
+          <button className="btn btn-primary mt-3" onClick={handleSaveWorkout}>
+            Save Workout
+          </button>
+          <button className="btn mt-3 btn-danger" onClick={handleDeleteWorkout}>
+            Delete Workout
+          </button>
+        </div>
       </div>
     </div>
   );

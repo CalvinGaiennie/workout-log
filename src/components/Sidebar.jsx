@@ -13,7 +13,11 @@ function Sidebar({ dispatch, workouts }) {
       <div className={`${isOpen ? "d-none" : ""}`}>
         <h1>Sidebar</h1>
         {workouts.map((workout) => (
-          <WorkoutCard key={workout.id} workout={workout} dispatch={dispatch} />
+          <WorkoutCard
+            key={workout._id}
+            workout={workout}
+            dispatch={dispatch}
+          />
         ))}
       </div>
       <button

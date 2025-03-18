@@ -39,16 +39,20 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Define workout schema
-const workoutSchema = new mongoose.Schema({
-  name: String,
-  description: String,
-  exercises: [
-    {
-      name: String,
-      sets: [Number],
-    },
-  ],
-});
+const workoutSchema = new mongoose.Schema(
+  {
+    name: String,
+    description: String,
+    exercises: [
+      {
+        id: String,
+        name: String,
+        sets: [Number],
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 const Workout = mongoose.model("Workout", workoutSchema);
 
@@ -72,7 +76,48 @@ app.post("/api/workouts", async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 5002;
+app.put("/api/workouts/:id", async (req, res) => {
+  try {
+    console.log("Received PUT request for workout:", req.params.id);
+    console.log("Request body:", req.body);
+
+    const updatedWorkout = await Workout.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedWorkout) {
+      console.log("No workout found with ID:", req.params.id);
+      return res.status(404).json({
+        message: "Workout not found",
+        workoutId: req.params.id,
+      });
+    }
+
+    console.log("Successfully updated workout:", updatedWorkout);
+    res.json(updatedWorkout);
+  } catch (error) {
+    console.error("Error updating workout:", error);
+    res.status(400).json({ message: error.message });
+  }
+});
+
+app.delete("/api/workouts/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedWorkout = await Workout.findByIdAndDelete(id);
+    if (!deletedWorkout) {
+      return res.status(404).json({ message: "Workout not found" });
+    }
+    res.status(200).json({ message: "Workout deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting Workout:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

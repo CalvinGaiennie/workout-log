@@ -13,13 +13,16 @@ function Exercise({ exercise, dispatch }) {
         onBlur={() =>
           dispatch({
             type: "SET_CURRENT_EXERCISE_NAME",
-            payload: exerciseName,
+            payload: { id: exercise.id, name: exerciseName },
           })
         }
       />
-      <div className="d-flex flex-column gap-2">
+      <div className="d-flex flex-column">
         {exercise.sets.map((set, index) => (
-          <input key={set} placeholder={`Set ${index + 1}`} />
+          <input
+            key={`${set}-${index}-${exerciseName}`}
+            placeholder={`Set ${index + 1}`}
+          />
         ))}
         <button
           onClick={() => dispatch({ type: "ADD_SET", payload: exercise.name })}

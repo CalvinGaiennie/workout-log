@@ -11,3 +11,16 @@ export const createWorkout = async (workout) => {
   const response = await axios.post(`${API_URL}/workouts`, workout);
   return response.data;
 };
+
+export const updateWorkout = async (workout) => {
+  const response = await axios.put(
+    `${API_URL}/workouts/${workout._id}`,
+    workout
+  );
+  return response.data;
+};
+
+export const deleteWorkout = async (workout) => {
+  const response = await axios.delete(`${API_URL}/workouts/${workout._id}`);
+  return response.data;
+};

@@ -2,10 +2,10 @@ import Exercise from "./Exercise";
 function Workout({ workout, dispatch }) {
   return (
     <div className="d-flex flex-column m-3">
-      <h1>{workout.name}</h1>
       <input
         type="text"
         placeholder="Workout Name"
+        style={{ fontSize: "28px" }}
         value={workout.name}
         onChange={(e) =>
           dispatch({

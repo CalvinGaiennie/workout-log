@@ -47,7 +47,7 @@ const workoutSchema = new mongoose.Schema(
       {
         id: String,
         name: String,
-        sets: [Number],
+        sets: [String],
       },
     ],
   },

@@ -92,6 +92,18 @@ const reducer = (state, action) => {
         currentWorkout: action.payload,
         workouts: [...state.workouts, action.payload],
       };
+    case "SET_SETS":
+      return {
+        ...state,
+        currentWorkout: {
+          ...state.currentWorkout,
+          exercises: state.currentWorkout.exercises.map((exercise) =>
+            exercise.id === action.payload.id
+              ? { ...exercise, sets: action.payload.sets }
+              : exercise
+          ),
+        },
+      };
     default:
       return state;
   }
@@ -154,15 +166,15 @@ function HomePage() {
     console.log("current workout", state.currentWorkout);
   }, [state.currentWorkout]);
 
+  useEffect(() => {
+    handleSaveWorkout();
+  }, [state.currentWorkout]);
   return (
     <div>
       <div className="d-flex">
         <Sidebar dispatch={dispatch} workouts={state.workouts} />
         <div>
           <Workout workout={state.currentWorkout} dispatch={dispatch} />
-          <button className="btn btn-primary mt-3" onClick={handleSaveWorkout}>
-            Save Workout
-          </button>
           <button className="btn mt-3 btn-danger" onClick={handleDeleteWorkout}>
             Delete Workout
           </button>

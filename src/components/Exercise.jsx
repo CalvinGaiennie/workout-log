@@ -2,11 +2,12 @@ import { useState } from "react";
 
 function Exercise({ exercise, dispatch }) {
   const [exerciseName, setExerciseName] = useState(exercise.name);
+  const [sets, setSets] = useState(exercise.sets);
   return (
     <div>
-      <h3>{exerciseName}</h3>
       <input
         type="text"
+        style={{ fontSize: "20px" }}
         placeholder="Exercise Name"
         value={exerciseName}
         onChange={(e) => setExerciseName(e.target.value)}
@@ -22,6 +23,16 @@ function Exercise({ exercise, dispatch }) {
           <input
             key={`${set}-${index}-${exerciseName}`}
             placeholder={`Set ${index + 1}`}
+            value={sets[index]}
+            onChange={(e) =>
+              setSets(sets.map((s, i) => (i === index ? e.target.value : s)))
+            }
+            onBlur={() =>
+              dispatch({
+                type: "SET_SETS",
+                payload: { id: exercise.id, sets },
+              })
+            }
           />
         ))}
         <button

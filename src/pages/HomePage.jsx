@@ -12,7 +12,7 @@ const initialState = {
       {
         id: crypto.randomUUID(),
         name: "Exercise 1",
-        sets: [1, 2, 3],
+        sets: [1],
       },
     ],
   },
@@ -114,6 +114,14 @@ function HomePage() {
 
   const handleSaveWorkout = async () => {
     try {
+      if (
+        state.currentWorkout.name === initialState.currentWorkout.name &&
+        state.currentWorkout.exercises.length ===
+          initialState.currentWorkout.exercises.length
+      ) {
+        return;
+      }
+
       let savedWorkout;
       console.log("Saving workout with ID:", state.currentWorkout._id);
       if (state.currentWorkout._id) {
@@ -149,6 +157,22 @@ function HomePage() {
     }
   };
 
+  const handleCreateNewWorkout = async () => {
+    dispatch({
+      type: "SET_CURRENT_WORKOUT",
+      payload: {
+        name: "New Workout",
+        duration: 30,
+        exercises: [
+          {
+            id: crypto.randomUUID(),
+            name: "Exercise 1",
+            sets: [1],
+          },
+        ],
+      },
+    });
+  };
   useEffect(() => {
     const fetchWorkouts = async () => {
       try {
@@ -169,12 +193,19 @@ function HomePage() {
   useEffect(() => {
     handleSaveWorkout();
   }, [state.currentWorkout]);
+
   return (
     <div>
       <div className="d-flex">
         <Sidebar dispatch={dispatch} workouts={state.workouts} />
         <div>
           <Workout workout={state.currentWorkout} dispatch={dispatch} />
+          <button
+            className="btn mt-3 btn-primary"
+            onClick={handleCreateNewWorkout}
+          >
+            Start New Workout
+          </button>
           <button className="btn mt-3 btn-danger" onClick={handleDeleteWorkout}>
             Delete Workout
           </button>

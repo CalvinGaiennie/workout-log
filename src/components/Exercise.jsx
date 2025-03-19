@@ -6,6 +6,7 @@ function Exercise({ exercise, dispatch }) {
   return (
     <div>
       <input
+        className="input"
         type="text"
         style={{ fontSize: "20px" }}
         placeholder="Exercise Name"
@@ -20,20 +21,24 @@ function Exercise({ exercise, dispatch }) {
       />
       <div className="d-flex flex-column">
         {exercise.sets.map((set, index) => (
-          <input
-            key={`${set}-${index}-${exerciseName}`}
-            placeholder={`Set ${index + 1}`}
-            value={sets[index]}
-            onChange={(e) =>
-              setSets(sets.map((s, i) => (i === index ? e.target.value : s)))
-            }
-            onBlur={() =>
-              dispatch({
-                type: "SET_SETS",
-                payload: { id: exercise.id, sets },
-              })
-            }
-          />
+          <div className="d-flex">
+            <span>{index + 1}.</span>
+            <input
+              className="input"
+              key={`${set}-${index}-${exerciseName}`}
+              placeholder={`Set ${index + 1}`}
+              value={sets[index]}
+              onChange={(e) =>
+                setSets(sets.map((s, i) => (i === index ? e.target.value : s)))
+              }
+              onBlur={() =>
+                dispatch({
+                  type: "SET_SETS",
+                  payload: { id: exercise.id, sets },
+                })
+              }
+            />
+          </div>
         ))}
         <button
           onClick={() => dispatch({ type: "ADD_SET", payload: exercise.name })}

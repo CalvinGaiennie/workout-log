@@ -3,6 +3,7 @@ function Workout({ workout, dispatch }) {
   return (
     <div className="d-flex flex-column m-3">
       <input
+        className="input"
         type="text"
         placeholder="Workout Name"
         style={{ fontSize: "28px" }}

@@ -3,6 +3,7 @@ import Workout from "../components/Workout";
 import { useEffect, useReducer } from "react";
 import { deleteWorkout, getWorkouts, updateWorkout } from "../services/api";
 import { createWorkout } from "../services/api";
+import AppNav from "../components/AppNav";
 
 const initialState = {
   currentWorkout: {
@@ -196,6 +197,7 @@ function HomePage() {
 
   return (
     <div>
+      <AppNav />
       <div className="d-flex">
         <Sidebar dispatch={dispatch} workouts={state.workouts} />
         <div>

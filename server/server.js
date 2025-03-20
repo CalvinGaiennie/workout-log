@@ -38,7 +38,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Define workout schema
+//Schemas
 const workoutSchema = new mongoose.Schema(
   {
     name: String,
@@ -53,8 +53,21 @@ const workoutSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+const ProteinSchema = new mongoose.Schema({
+  id: String,
+  proteinInGrams: Number,
+  date: Date,
+});
+const WeightSchema = new mongoose.Schema({
+  id: String,
+  weight: Number,
+  date: Date,
+});
 
+// Models
 const Workout = mongoose.model("Workout", workoutSchema);
+const Weight = mongoose.model("Weight", WeightSchema);
+const Protein = mongoose.model("Protein", ProteinSchema);
 
 // Routes
 app.get("/api/workouts", async (req, res) => {
@@ -114,6 +127,56 @@ app.delete("/api/workouts/:id", async (req, res) => {
   } catch (error) {
     console.error("Error deleting Workout:", error);
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Weight
+app.get("/api/weights", async (req, res) => {
+  try {
+    const weights = await Weight.find();
+    res.json(weights);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+app.post("/api/weights", async (req, res) => {
+  try {
+    const weight = new Weight(req.body);
+    const savedWeight = await weight.save();
+    res.status(201).json(savedWeight);
+  } catch (error) {
+    res.status(400).json({
+      message: error.message,
+    });
+  }
+});
+
+app.put("/api/wights/:id", async (req, res) => {
+  try {
+    console.log("Reveived PUT request for weight:", req.params.id);
+    console.log("Request body:", req.body);
+
+    const updatedWeight = await Workout.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedWeight) {
+      console.log("No weight found with ID:", req.params.id);
+      return res.status(404).json({
+        message: "Weight not found",
+        workoutId: req.params.id,
+      });
+    }
+    console.log("Successfully updated weight:", updatedWeight);
+    res.json(updatedWeight);
+  } catch (error) {
+    console.error("Error updating weight:", error);
+    res.status(400).json({ message: error.message });
   }
 });
 

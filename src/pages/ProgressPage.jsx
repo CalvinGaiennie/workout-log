@@ -1,17 +1,8 @@
 import AppNav from "../components/AppNav";
-import { useReducer } from "react";
+import { useReducer, useEffect } from "react";
 import GenericChart from "../components/GenericChart";
-// const initialState = {
-//   example: [
-//     { weight: 100, date: "2021-01-01" },
-//     { weight: 200, date: "2021-01-02" },
-//     { weight: 300, date: "2021-01-03" },
-//     { weight: 400, date: "2021-01-04" },
-//     { weight: 500, date: "2021-01-05" },
-//     { weight: 600, date: "2021-01-06" },
-//     { weight: 700, date: "2021-01-07" },
-//   ],
-// };
+import { getWeights, getProtein } from "../services/api";
+
 const initialState = {
   example: [
     { weight: 152, date: "2025-03-16" },
@@ -30,12 +21,21 @@ const initialState = {
     { weight: 162, date: "2025-03-29" },
     { weight: 163, date: "2025-03-30" },
   ],
+  protein: [],
+  weights: [],
+  workouts: [],
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "SET_EXAMPLE":
-      return {};
+    case "SET_WEIGHTS":
+      return { ...state, weights: action.payload };
+    case "SET_PROTEIN":
+      return { ...state, protein: action.payload };
+    case "SET_WORKOUTS":
+      return { ...state, workouts: action.payload };
+    default:
+      return state;
   }
 };
 
@@ -49,6 +49,32 @@ function ProgressPage() {
     XMax: 170,
     YTicks: 5,
   };
+
+  useEffect(() => {
+    console.log("Current state:", state);
+  }, [state]);
+
+  useEffect(() => {
+    const fetchWeights = async () => {
+      try {
+        const weights = await getWeights();
+        console.log("Fetched weights:", weights);
+        dispatch({ type: "SET_WEIGHTS", payload: weights });
+      } catch (error) {
+        console.error("Error fetching weights:", error);
+      }
+    };
+    fetchWeights();
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchProtein = async () => {
+  //     const protein = await getProtein();
+  //     dispatch({ type: "SET_PROTEIN", payload: protein });
+  //   };
+  //   fetchProtein();
+  // }, []);
+
   return (
     <div>
       <AppNav />
@@ -57,7 +83,7 @@ function ProgressPage() {
         title="Weight"
         chartSettings={weightChartSettings}
       />
-      <GenericChart data={state.example} />
+      <GenericChart data={state.weights} title="Real Weight" />
     </div>
   );
 }

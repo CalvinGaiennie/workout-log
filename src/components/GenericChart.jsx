@@ -8,13 +8,14 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
-import { useState, useEffect } from "react";
 
 function GenericChart({ data, title, chartSettings }) {
-  // const { yTicks, setYTicks } = useState(chartSettings.YTicks);
-
   const formattedData = data.map((item) => ({
-    key: item.date,
+    key: new Date(item.date).toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "2-digit",
+    }),
     count: item.weight,
   }));
 

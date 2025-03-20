@@ -20,7 +20,7 @@ function GenericChart({ data, title, chartSettings }) {
   }));
 
   return (
-    <div>
+    <div className="p-5">
       <h1 className="text-center">{title ? title : "Title Goes Here"}</h1>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={formattedData} margin={{ bottom: 50 }}>

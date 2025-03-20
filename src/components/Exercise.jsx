@@ -6,7 +6,7 @@ function Exercise({ exercise, dispatch }) {
   return (
     <div>
       <input
-        className="input"
+        className="input mt-1"
         type="text"
         style={{ fontSize: "20px" }}
         placeholder="Exercise Name"
@@ -19,6 +19,7 @@ function Exercise({ exercise, dispatch }) {
           })
         }
       />
+      {/* Need to change on blur so that you dont loose data if you change notes before changing focus */}
       <div className="d-flex flex-column">
         {exercise.sets.map((set, index) => (
           <div className="d-flex">
@@ -40,7 +41,9 @@ function Exercise({ exercise, dispatch }) {
             />
           </div>
         ))}
+        {/* Need to change on blur so that you dont loose data if you change notes before changing focus */}
         <button
+          className="mt-3"
           onClick={() => dispatch({ type: "ADD_SET", payload: exercise.name })}
         >
           Add Set

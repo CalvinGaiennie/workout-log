@@ -22,8 +22,8 @@ function OtherInputs() {
   return (
     <div>
       <AppNav />
-      <div className="d-flex flex-column align-items-center">
-        <h1>Other Inputs</h1>
+      <h1 className="text-center m-4">Other Inputs</h1>
+      <div className="d-flex flex-row align-items-center justify-content-center gap-5">
         <GenericInput title="Weight" handleSubmit={handleWeight} />
         <GenericInput title="Protein Intake" handleSubmit={handleProtein} />
       </div>

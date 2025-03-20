@@ -200,17 +200,22 @@ function HomePage() {
       <AppNav />
       <div className="d-flex">
         <Sidebar dispatch={dispatch} workouts={state.workouts} />
-        <div>
-          <Workout workout={state.currentWorkout} dispatch={dispatch} />
-          <button
-            className="btn mt-3 btn-primary"
-            onClick={handleCreateNewWorkout}
-          >
-            Start New Workout
-          </button>
-          <button className="btn mt-3 btn-danger" onClick={handleDeleteWorkout}>
-            Delete Workout
-          </button>
+        <div className="d-flex flex-grow-1 justify-content-center align-items-center">
+          <div>
+            <Workout workout={state.currentWorkout} dispatch={dispatch} />
+            <button
+              className="btn mt-3 btn-primary"
+              onClick={handleCreateNewWorkout}
+            >
+              Start New Workout
+            </button>
+            <button
+              className="btn mt-3 btn-danger"
+              onClick={handleDeleteWorkout}
+            >
+              Delete Workout
+            </button>
+          </div>
         </div>
       </div>
     </div>

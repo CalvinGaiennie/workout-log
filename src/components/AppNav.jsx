@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 function AppNav() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light m-1">
+    <nav className="navbar navbar-expand-lg navbar-light mx-4 ">
       <Link className="navbar-brand" to="/homepage">
         Home
       </Link>

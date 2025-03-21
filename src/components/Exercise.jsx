@@ -42,6 +42,7 @@ function Exercise({ exercise, dispatch }) {
           </div>
         ))}
         {/* Need to change on blur so that you dont loose data if you change notes before changing focus */}
+        <hr className="border border-1 border-dark"></hr>
         <button
           className="mt-3"
           onClick={() => dispatch({ type: "ADD_SET", payload: exercise.name })}

@@ -1,7 +1,7 @@
 import AppNav from "../components/AppNav";
 import { useReducer, useEffect } from "react";
 import GenericChart from "../components/GenericChart";
-import { getWeights, getProtein } from "../services/api";
+import { getWeights, getProtein, getWorkouts } from "../services/api";
 
 const initialState = {
   example: [
@@ -65,6 +65,13 @@ function ProgressPage() {
       }
     };
     fetchWeights();
+
+    const fetchWorkouts = async () => {
+      const workouts = await getWorkouts();
+      dispatch({ type: "SET_WORKOUTS", payload: workouts });
+    };
+    fetchWorkouts();
+    console.log(state.workouts);
   }, []);
 
   // useEffect(() => {
